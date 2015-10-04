@@ -28,9 +28,11 @@ typedef struct s_block *s_block_ptr;
 
 /* block struct */
 struct s_block {
-    size_t size;
-    int free;
- };
+	size_t size;
+	int free;
+	struct s_block *next;
+	struct s_block *prev;
+};
 
 /* Split block according to size, b must exist */
 void split_block (s_block_ptr b, size_t s);

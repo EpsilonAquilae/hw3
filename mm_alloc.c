@@ -56,17 +56,21 @@ void* mm_malloc(size_t size)
 
 	// we are iterating through all our memory blocks looking from a large enough free data segment
 	// this will exit immediately the first time as the boundries are the same
-	while (current_address != last_address){
+	while (1){
+		if (current_address == NULL || current_address == last_address) break;  // we have no chunks
 		current_address_block = (struct s_block *)current_address; // the first address is the block
 		if (current_address_block->free){
-			if (current_address_block->size >= size){
+			if (current_address_block->size >= size){  // we have enough space right here
 				current_address_block->free = 0;
 				// we found a large enough free chunk, return now
 				return_address = current_address;
 				break;
+			}else {
+				// iterate through adjacent free chunks and tally the sizes
 			}
 		}
-		current_address += current_address_block->size;
+//		current_address += current_address_block->size;
+		current_address = current_address_block->next;
 	}
 	// after iterating through all our allocated chunk's blocks we still havent found anything yet
 	if (!return_address){
@@ -77,6 +81,8 @@ void* mm_malloc(size_t size)
 		current_address_block = current_address;  // create/setup the meta data block at the front
 		current_address_block->free = 0;
 		current_address_block->size = size;
+		current_address_block->prev = NULL;
+		current_address_block->next = NULL;
 	}
 
 	return_address += sizeof(struct s_block);  // advance the ptr to return to after the meta block
