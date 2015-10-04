@@ -17,6 +17,7 @@ extern "C" {
 #endif
 
 #include <stdlib.h>
+#include <unistd.h>
 
 void* mm_malloc(size_t size);
 void* mm_realloc(void* ptr, size_t size);
@@ -28,12 +29,7 @@ typedef struct s_block *s_block_ptr;
 /* block struct */
 struct s_block {
     size_t size;
-    struct s_block *next;
-    struct s_block *prev;
     int free;
-    void *ptr;
-    /* A pointer to the allocated block */
-    char data [0];
  };
 
 /* Split block according to size, b must exist */
